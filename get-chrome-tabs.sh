@@ -1,8 +1,8 @@
 #!/bin/bash
 
-PORT=9222
-SOCKET=chrome_devtools_remote
-FILE=tabs.json
+port=9222
+socket=chrome_devtools_remote
+file=tabs.json
 
 while getopts 'hf:p:s:' opt; do
   case $opt in
@@ -19,17 +19,17 @@ Usage: get-chrome-tabs.sh [options]
 EOF
     exit
     ;;
-  p) PORT=$OPTARG ;;
-  s) SOCKET=$OPTARG ;;
-  f) FILE=$OPTARG ;;
+  p) port=$OPTARG ;;
+  s) socket=$OPTARG ;;
+  f) file=$OPTARG ;;
   \?) echo "invalid argument detected" ;;
   esac
 done
 
-echo "Using port $PORT and socket $SOCKET"
-adb -d forward tcp:$PORT localabstract:$SOCKET
+echo "Using port $port and socket $socket"
+adb -d forward tcp:$port localabstract:$socket
 sleep 2
-url="http://localhost:$PORT/json/list"
+url="http://localhost:$port/json/list"
 echo "fetching $url"
 jsonString=curl $url
 if test -z "$jsonString"; then
@@ -38,3 +38,5 @@ if test -z "$jsonString"; then
 else
   echo $jsonString >$file
 fi
+
+./json-to-csv.py $file
